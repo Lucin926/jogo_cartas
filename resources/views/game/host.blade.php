@@ -1,31 +1,38 @@
 @extends('layouts.app')
 
-@section('title', 'Mesa: ' . $game->title . ' (' . $game->code . ')')
+@section('title', 'Cards Against Humanity - Mesa: ' . $game->title . ' (' . $game->code . ')')
 
 @section('content')
-<div class="flex-1 flex flex-col p-4 md:p-8 max-w-[1500px] w-full mx-auto" id="host-app">
-    <!-- Header Apple HIG (Glass Navigation Bar) -->
-    <header class="apple-glass rounded-3xl p-4 md:px-8 md:py-5 flex flex-wrap items-center justify-between gap-4 mb-8">
+<div class="flex-1 flex flex-col p-4 md:p-6 lg:p-8 max-w-[1600px] w-full mx-auto select-none" id="host-app">
+    
+    <!-- HEADER MODERNO PREMIUM (Estilo Cards Against Humanity) -->
+    <header class="bg-[#141519]/90 border border-white/10 rounded-3xl px-6 py-4 flex flex-wrap items-center justify-between gap-4 mb-6 shadow-2xl backdrop-blur-xl">
         <div class="flex items-center gap-4">
+            <div class="w-10 h-10 rounded-2xl bg-white flex items-center justify-center shadow-lg">
+                <svg class="w-5 h-5 fill-current text-black" viewBox="0 0 24 24">
+                    <rect x="2" y="4" width="13" height="17" rx="2" fill="black" fill-opacity="0.3"/>
+                    <rect x="7" y="2" width="13" height="17" rx="2" fill="black"/>
+                </svg>
+            </div>
             <div>
-                <h1 class="text-xl md:text-2xl font-bold tracking-tight text-white flex items-center gap-3">
+                <h1 class="text-xl md:text-2xl font-black tracking-tight text-white flex items-center gap-2.5">
                     {{ $game->title }}
-                    <span class="text-xs px-2.5 py-1 rounded-full bg-white/10 text-white/70 font-mono font-medium" id="header-rounds-badge">
+                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-white/10 text-white/80 font-mono font-bold" id="header-rounds-badge">
                         {{ $game->total_rounds }} Rodadas
                     </span>
                 </h1>
                 <div class="flex items-center gap-2 mt-0.5">
                     <span class="w-2 h-2 rounded-full bg-appleGreen animate-pulse"></span>
-                    <span class="text-xs text-white/50 font-medium">Sincronização em Tempo Real</span>
+                    <span class="text-xs text-white/50 font-medium">Sincronização ao Vivo</span>
                 </div>
             </div>
         </div>
 
-        <!-- Código da Sala em Destaque Minimalista Apple -->
-        <div class="flex items-center gap-6">
+        <!-- CÓDIGO DA SALA E AÇÕES -->
+        <div class="flex items-center gap-5">
             <div class="text-right">
-                <span class="text-[11px] font-semibold uppercase tracking-widest text-white/40 block">Código da Sala</span>
-                <div class="text-2xl md:text-3xl font-mono font-bold text-white tracking-wider flex items-center gap-2">
+                <span class="text-[10px] font-bold uppercase tracking-widest text-white/40 block">Código da Sala</span>
+                <div class="text-2xl md:text-3xl font-mono font-black text-white tracking-widest flex items-center gap-2">
                     <span id="room-code-display">{{ $game->code }}</span>
                     <button onclick="navigator.clipboard.writeText('{{ $game->code }}')" title="Copiar código" class="text-white/40 hover:text-white transition-colors p-1">
                         <i data-lucide="copy" class="w-4 h-4"></i>
@@ -34,11 +41,11 @@
             </div>
 
             <div class="flex items-center gap-2">
-                <button id="btn-start-round" onclick="startRound()" class="bg-white hover:bg-white/90 active:scale-95 text-black font-bold px-6 py-3 rounded-2xl shadow-xl transition-all flex items-center gap-2 text-sm">
+                <button id="btn-start-round" onclick="startRound()" class="bg-white hover:bg-white/90 active:scale-95 text-black font-black px-6 py-3.5 rounded-2xl shadow-xl transition-all flex items-center gap-2 text-sm">
                     <i data-lucide="play" class="w-4 h-4 fill-black"></i>
                     <span id="btn-start-text">Iniciar Partida</span>
                 </button>
-                <button id="btn-force-judging" onclick="forceJudging()" class="hidden bg-appleYellow/20 border border-appleYellow/40 hover:bg-appleYellow/30 text-appleYellow font-bold px-5 py-3 rounded-2xl shadow-lg transition-all text-sm flex items-center gap-2">
+                <button id="btn-force-judging" onclick="forceJudging()" class="hidden bg-appleYellow/20 border border-appleYellow/40 hover:bg-appleYellow/30 text-appleYellow font-bold px-5 py-3.5 rounded-2xl shadow-lg transition-all text-sm flex items-center gap-2">
                     <i data-lucide="fast-forward" class="w-4 h-4"></i>
                     Abrir Votação
                 </button>
@@ -46,116 +53,125 @@
         </div>
     </header>
 
-    <!-- Grade Principal -->
-    <div class="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <!-- GRADE PRINCIPAL -->
+    <div class="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
-        <!-- Centro da Mesa -->
-        <div class="lg:col-span-9 flex flex-col justify-center min-h-[500px]">
+        <!-- CENTRO DA MESA (ÁREA DE JOGO / PERGUNTA / CARTAS JOGADAS) -->
+        <div class="lg:col-span-8 xl:col-span-9 flex flex-col justify-center min-h-[550px]">
 
-            <!-- LOBBY DE ESPERA (QR Code Apple Style) -->
-            <div id="state-lobby" class="apple-glass-card rounded-[36px] p-8 md:p-14 flex flex-col md:flex-row items-center justify-center gap-12 relative overflow-hidden animate-apple-spring">
-                <div class="bg-white p-6 rounded-[28px] shadow-2xl flex flex-col items-center justify-center">
-                    <div class="w-56 h-56 flex items-center justify-center">
+            <!-- 1. LOBBY DE ESPERA (QR CODE ULTRA MODERNO) -->
+            <div id="state-lobby" class="bg-[#141519]/90 border border-white/10 rounded-[36px] p-8 md:p-14 flex flex-col md:flex-row items-center justify-center gap-10 lg:gap-14 shadow-2xl relative overflow-hidden backdrop-blur-xl animate-apple-spring">
+                
+                <!-- CONTAINER QR CODE ESTILO CARD ELEGANTE -->
+                <div class="bg-white p-6 rounded-[32px] shadow-[0_20px_50px_rgba(0,0,0,0.8)] flex flex-col items-center justify-center transform hover:scale-105 transition-transform duration-300">
+                    <div class="w-60 h-60 flex items-center justify-center">
                         {!! $qrCodeSvg !!}
                     </div>
-                    <span class="text-[11px] font-bold text-black/60 uppercase tracking-widest mt-4">Aponte a câmera do iPhone/Android</span>
+                    <div class="flex items-center gap-2 mt-4 text-black/70 text-xs font-bold uppercase tracking-wider">
+                        <i data-lucide="camera" class="w-4 h-4"></i>
+                        Aponte a câmera do celular
+                    </div>
                 </div>
 
+                <!-- TEXTO DO LOBBY -->
                 <div class="max-w-md text-center md:text-left space-y-4">
-                    <span class="px-3.5 py-1.5 rounded-full bg-appleAccent/15 text-appleAccent font-semibold text-xs tracking-wide">
-                        Lobby da Partida
+                    <span class="px-3.5 py-1.5 rounded-full bg-appleAccent/15 text-appleAccent font-bold text-xs tracking-wide inline-flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-appleAccent animate-ping"></span>
+                        Lobby Aberto
                     </span>
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight">
-                        Conecte-se para jogar.
+                    <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight leading-tight">
+                        Escaneie para entrar no jogo.
                     </h2>
-                    <p class="text-white/60 text-sm leading-relaxed">
-                        Aponte a câmera do seu celular para o QR Code ao lado para entrar na sala.
+                    <p class="text-white/60 text-sm md:text-base leading-relaxed">
+                        Aponte a câmera do celular ou entre com o código <span class="font-mono font-bold text-white bg-white/10 px-2 py-0.5 rounded-lg">{{ $game->code }}</span> no site.
                     </p>
-                    <p class="text-white/40 text-xs">
-                        Todos recebem a pergunta, todos enviam respostas e todos votam na melhor!
-                    </p>
+                    <div class="pt-2 text-xs text-white/40 flex items-center gap-2 justify-center md:justify-start">
+                        <i data-lucide="info" class="w-4 h-4"></i>
+                        Novos jogadores podem entrar mesmo com a partida em andamento!
+                    </div>
                 </div>
             </div>
 
-            <!-- RODADA ATIVA -->
-            <div id="state-round" class="hidden flex-col gap-8 animate-apple-spring">
-                <!-- Carta Preta Apple HIG -->
+            <!-- 2. RODADA ATIVA -->
+            <div id="state-round" class="hidden flex-col gap-6 animate-apple-spring">
+                
+                <!-- CARTA PRETA (PERGUNTA OFICIAL CARDS AGAINST HUMANITY) -->
                 <div class="flex justify-center">
-                    <div id="main-black-card" class="apple-black-card p-8 md:p-14 max-w-2xl w-full min-h-[280px] flex flex-col justify-between relative">
-                        <div class="flex items-center justify-between text-xs font-semibold text-white/50 uppercase tracking-wider mb-4">
-                            <span id="round-number-badge" class="px-3 py-1 rounded-full bg-white/10 text-white">RODADA 1</span>
-                            <span id="black-card-pick-badge" class="font-mono text-appleAccent font-bold">ESCOLHA 1 CARTA</span>
+                    <div id="main-black-card" class="w-full max-w-3xl rounded-[32px] bg-[#111215] text-white p-8 md:p-12 min-h-[260px] flex flex-col justify-between border border-white/15 shadow-[0_30px_70px_rgba(0,0,0,0.95)] relative">
+                        <div class="flex items-center justify-between text-xs font-bold text-white/50 uppercase tracking-wider mb-4">
+                            <span id="round-number-badge" class="px-3.5 py-1 rounded-full bg-white/10 text-white font-mono">RODADA 1 DE 5</span>
+                            <span id="black-card-pick-badge" class="font-mono text-appleAccent font-extrabold text-sm">ESCOLHA 1 CARTA</span>
                         </div>
                         
-                        <p id="black-card-text" class="text-2xl md:text-4xl font-bold leading-tight tracking-tight my-auto text-white">
-                            Carregando carta...
+                        <p id="black-card-text" class="text-2xl md:text-4xl font-black leading-tight tracking-tight my-auto text-white">
+                            Carregando pergunta...
                         </p>
 
-                        <div class="flex items-center justify-between text-xs text-white/40 font-medium pt-6 border-t border-white/10 mt-6">
+                        <div class="flex items-center justify-between text-xs text-white/40 font-medium pt-5 border-t border-white/10 mt-6">
                             <div class="flex items-center gap-2">
-                                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                                <svg class="w-4 h-4 fill-current text-white/60" viewBox="0 0 24 24">
                                     <rect x="2" y="4" width="13" height="17" rx="2" fill="white" fill-opacity="0.3"/>
                                     <rect x="7" y="2" width="13" height="17" rx="2" fill="white"/>
                                 </svg>
-                                <span class="font-bold tracking-wider uppercase text-[11px]">Cards Against Humanity</span>
+                                <span class="font-black tracking-widest uppercase text-[10px] text-white/70">Cards Against Humanity</span>
                             </div>
-                            <span class="text-white/60">Votação Coletiva</span>
+                            <span class="text-white/60 font-semibold">Votação Comunitária</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Progresso de Respostas e Revelação Instantânea de Cartas -->
+                <!-- PROGRESSO E CARTAS JOGADAS INSTANTANEAMENTE -->
                 <div id="submissions-progress-box" class="space-y-6">
-                    <div class="apple-glass rounded-2xl p-6 text-center max-w-lg mx-auto w-full">
-                        <div class="flex items-center justify-between text-sm text-white/60 mb-2">
+                    <div class="bg-[#141519]/90 border border-white/10 rounded-2xl p-5 text-center max-w-lg mx-auto w-full shadow-xl">
+                        <div class="flex items-center justify-between text-sm text-white/70 font-semibold mb-2">
                             <span>Respostas enviadas</span>
-                            <span id="progress-text" class="font-mono font-bold text-white text-base">0 / 0</span>
+                            <span id="progress-text" class="font-mono font-black text-white text-base">0 / 0</span>
                         </div>
                         <div class="w-full bg-white/10 rounded-full h-2.5 overflow-hidden">
-                            <div id="progress-bar" class="bg-appleAccent h-full rounded-full transition-all duration-300 w-0"></div>
+                            <div id="progress-bar" class="bg-white h-full rounded-full transition-all duration-300 w-0"></div>
                         </div>
-                        <p class="text-xs text-white/40 mt-2.5" id="progress-subtitle">As cartas enviadas aparecem instantaneamente abaixo!</p>
+                        <p class="text-xs text-white/40 mt-2 font-medium" id="progress-subtitle">As cartas aparecem na mesa assim que forem enviadas!</p>
                     </div>
 
-                    <!-- Grid de Cartas Reveladas Instantaneamente conforme cada um envia -->
+                    <!-- GRID DE CARTAS JOGADAS AO VIVO COM NOME DO JOGADOR -->
                     <div id="live-revealed-cards-section" class="space-y-3">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-semibold text-white/50 uppercase tracking-wider flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-appleGreen animate-pulse"></span>
+                        <div class="flex items-center justify-between px-2">
+                            <span class="text-xs font-bold text-white/60 uppercase tracking-wider flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-appleGreen animate-pulse"></span>
                                 Cartas Jogadas na Mesa
                             </span>
-                            <span class="text-xs text-white/40" id="live-cards-count-label">0 jogadas</span>
+                            <span class="text-xs font-mono font-bold text-white/40" id="live-cards-count-label">0 jogadas</span>
                         </div>
                         <div id="live-revealed-cards-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-                            <!-- Cards adicionados via JS em tempo real -->
+                            <!-- Cards ao vivo inseridos via JS -->
                         </div>
                     </div>
                 </div>
 
-                <!-- FASE DE VOTAÇÃO (Cartas Reveladas) -->
-                <div id="judging-grid-container" class="hidden space-y-4">
-                    <div class="text-center">
-                        <span class="px-3.5 py-1 rounded-full bg-appleYellow/15 text-appleYellow font-semibold text-xs tracking-wide">
-                            Votação Coletiva
+                <!-- FASE DE VOTAÇÃO (CARTAS ANÔNIMAS PARA ESCOLHER A MELHOR) -->
+                <div id="judging-grid-container" class="hidden space-y-5">
+                    <div class="text-center py-2">
+                        <span class="px-4 py-1.5 rounded-full bg-appleYellow/15 text-appleYellow font-black text-xs tracking-wider uppercase">
+                            👑 Hora da Votação
                         </span>
-                        <h3 class="text-2xl font-bold text-white mt-2">Escolham a melhor resposta no celular</h3>
+                        <h3 class="text-2xl md:text-3xl font-black text-white mt-2">Escolham a melhor resposta no celular</h3>
                         <p class="text-xs font-mono text-white/50 mt-1" id="votes-counter-display">0 votos computados</p>
                     </div>
 
-                    <div id="submissions-cards-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 pt-2">
+                    <div id="submissions-cards-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 pt-2">
                         <!-- Cartas geradas via JS -->
                     </div>
                 </div>
 
-                <!-- ANÚNCIO DO VENCEDOR -->
-                <div id="round-winner-banner" class="hidden apple-glass-card rounded-[32px] p-8 md:p-12 text-center animate-apple-spring border-appleYellow/30 space-y-4">
-                    <span class="text-4xl inline-block">👑</span>
-                    <h3 class="text-2xl md:text-3xl font-extrabold text-white">Resposta Vencedora da Rodada</h3>
-                    <p class="text-xl font-bold text-appleYellow" id="winner-player-name">Fulano (+1 Ponto)</p>
-                    <div id="winner-cards-text" class="bg-white/10 max-w-xl mx-auto p-6 rounded-2xl border border-white/15 text-lg font-bold text-white shadow-xl"></div>
+                <!-- ANÚNCIO DO VENCEDOR DA RODADA -->
+                <div id="round-winner-banner" class="hidden bg-[#16171b]/95 border border-appleYellow/40 rounded-[36px] p-8 md:p-12 text-center animate-apple-spring shadow-2xl space-y-4">
+                    <span class="text-5xl inline-block">👑</span>
+                    <h3 class="text-2xl md:text-4xl font-black text-white">Resposta Vencedora da Rodada!</h3>
+                    <p class="text-2xl font-black text-appleYellow" id="winner-player-name">Jogador (+1 Ponto)</p>
+                    <div id="winner-cards-text" class="bg-white/10 max-w-xl mx-auto p-6 rounded-3xl border border-white/15 text-xl font-black text-white shadow-xl"></div>
                     
                     <div class="pt-4 border-t border-white/10">
-                        <p class="text-sm text-white/60" id="host-ready-status">
+                        <p class="text-sm font-semibold text-white/70" id="host-ready-status">
                             Aguardando jogadores apertarem "Próxima Rodada"...
                         </p>
                     </div>
@@ -164,39 +180,44 @@
             </div>
 
             <!-- FIM DE JOGO -->
-            <div id="state-game-finished" class="hidden text-center apple-glass-card rounded-[36px] p-12 space-y-6">
+            <div id="state-game-finished" class="hidden text-center bg-[#141519]/95 border border-white/15 rounded-[40px] p-12 space-y-6 shadow-2xl">
                 <span class="text-6xl inline-block animate-bounce">🏆</span>
-                <h2 class="text-4xl md:text-5xl font-extrabold text-white">Temos um Campeão!</h2>
-                <p id="champion-announcement" class="text-2xl font-semibold text-applePink"></p>
-                <button onclick="startRound()" class="bg-white hover:bg-white/90 text-black font-bold px-8 py-4 rounded-2xl text-base shadow-xl transition-all">
+                <h2 class="text-4xl md:text-6xl font-black text-white">Temos um Campeão!</h2>
+                <p id="champion-announcement" class="text-3xl font-black text-applePink"></p>
+                <button onclick="startRound()" class="bg-white hover:bg-white/90 text-black font-black px-10 py-4 rounded-2xl text-lg shadow-2xl transition-all">
                     Iniciar Nova Partida
                 </button>
             </div>
 
         </div>
 
-        <!-- Painel Lateral de Jogadores Apple HIG -->
-        <div class="lg:col-span-3 space-y-6">
-            <div class="apple-glass rounded-3xl p-6">
-                <div class="flex items-center justify-between pb-4 border-b border-white/10 mb-4">
-                    <h3 class="font-bold text-white text-base flex items-center gap-2">
-                        <i data-lucide="users" class="w-4 h-4 text-appleAccent"></i>
-                        Participantes (<span id="players-count">0</span>)
+        <!-- PAINEL LATERAL: RANKING DE PARTICIPANTES (ULTRA ORGANIZADO) -->
+        <div class="lg:col-span-4 xl:col-span-3 space-y-4">
+            <div class="bg-[#141519]/90 border border-white/10 rounded-3xl p-5 md:p-6 shadow-xl backdrop-blur-xl">
+                <div class="flex items-center justify-between pb-3.5 border-b border-white/10 mb-4">
+                    <h3 class="font-black text-white text-sm md:text-base flex items-center gap-2">
+                        <i data-lucide="trophy" class="w-4 h-4 text-appleYellow"></i>
+                        Ranking (<span id="players-count">0</span>)
                     </h3>
+                    <span class="text-[10px] font-mono uppercase tracking-widest text-white/40 font-bold">Pontuação</span>
                 </div>
 
-                <div id="players-list" class="space-y-2 max-h-[500px] overflow-y-auto pr-1">
-                    <div class="text-center py-8 text-white/40 text-sm">
+                <!-- LISTA DO RANKING COM MEDALHAS -->
+                <div id="players-list" class="space-y-2.5 max-h-[500px] overflow-y-auto pr-1">
+                    <div class="text-center py-8 text-white/40 text-xs">
                         Nenhum jogador conectado ainda.
                     </div>
                 </div>
             </div>
 
-            <div class="apple-glass rounded-3xl p-5 text-xs text-white/50 space-y-2">
-                <p class="font-semibold text-white/80 uppercase tracking-wider">Como Jogar:</p>
-                <p>1. Todos recebem a pergunta e escolhem suas respostas.</p>
-                <p>2. Todos votam na mais engraçada pelo celular.</p>
-                <p>3. A mais votada pontua e todos avançam juntos!</p>
+            <!-- CARD DE COMO JOGAR -->
+            <div class="bg-[#141519]/70 border border-white/5 rounded-3xl p-5 text-xs text-white/50 space-y-2">
+                <p class="font-bold text-white/80 uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+                    <i data-lucide="help-circle" class="w-3.5 h-3.5"></i> Regras Rápidas:
+                </p>
+                <p>1. Todos recebem a pergunta e escolhem a melhor resposta.</p>
+                <p>2. A resposta aparece na tela grande na mesma hora.</p>
+                <p>3. Todos votam na mais engraçada e a mais votada pontua!</p>
             </div>
         </div>
 
@@ -218,22 +239,33 @@
         playersCount.innerText = g.players.length;
 
         if (g.players.length === 0) {
-            playersList.innerHTML = `<div class="text-center py-8 text-white/40 text-sm">Nenhum jogador conectado ainda.</div>`;
+            playersList.innerHTML = `<div class="text-center py-8 text-white/40 text-xs">Nenhum jogador conectado ainda.</div>`;
         } else {
-            playersList.innerHTML = g.players.map(p => `
-                <div class="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/10 transition-all hover:bg-white/10">
-                    <div class="flex items-center gap-2.5 truncate">
-                        <span class="w-2 h-2 rounded-full ${p.is_connected ? 'bg-appleGreen' : 'bg-white/20'}"></span>
-                        <span class="font-semibold text-sm text-white truncate">${p.nickname}</span>
+            // Ordena jogadores por pontuação decrescente
+            const sortedPlayers = [...g.players].sort((a, b) => b.score - a.score);
+            
+            playersList.innerHTML = sortedPlayers.map((p, idx) => {
+                let rankBadge = `<span class="w-5 h-5 rounded-full bg-white/10 text-white/60 flex items-center justify-center text-[10px] font-mono font-bold">${idx + 1}</span>`;
+                if (idx === 0 && p.score > 0) rankBadge = `<span class="text-sm">🥇</span>`;
+                else if (idx === 1 && p.score > 0) rankBadge = `<span class="text-sm">🥈</span>`;
+                else if (idx === 2 && p.score > 0) rankBadge = `<span class="text-sm">🥉</span>`;
+
+                return `
+                    <div class="flex items-center justify-between p-3 rounded-2xl bg-[#1b1c22] border border-white/[0.06] transition-all hover:border-white/20">
+                        <div class="flex items-center gap-2.5 truncate">
+                            ${rankBadge}
+                            <span class="w-2 h-2 rounded-full ${p.is_connected ? 'bg-appleGreen' : 'bg-white/20'}"></span>
+                            <span class="font-bold text-sm text-white truncate">${p.nickname}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-mono font-black text-sm text-white bg-white/10 px-2.5 py-0.5 rounded-xl">${p.score} <span class="text-[10px] text-white/50 font-normal">pts</span></span>
+                            <button onclick="removePlayer(${p.id})" title="Remover jogador" class="text-white/30 hover:text-red-400 transition-colors p-1">
+                                <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                            </button>
+                        </div>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <span class="font-mono font-bold text-sm text-appleAccent">${p.score} pts</span>
-                        <button onclick="removePlayer(${p.id})" title="Remover jogador" class="text-white/30 hover:text-red-400 transition-colors p-1">
-                            <i data-lucide="x" class="w-3.5 h-3.5"></i>
-                        </button>
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
             if (window.lucide) window.lucide.createIcons();
         }
 
@@ -264,7 +296,7 @@
             stateGameFinished.classList.add('hidden');
             btnStartText.innerText = 'Forçar Próxima Rodada';
 
-            document.getElementById('round-number-badge').innerText = `RODADA ${r.round_number} de ${g.total_rounds}`;
+            document.getElementById('round-number-badge').innerText = `RODADA ${r.round_number} DE ${g.total_rounds}`;
             document.getElementById('black-card-pick-badge').innerText = `ESCOLHA ${r.black_card.pick_count} CARTA(S)`;
             document.getElementById('black-card-text').innerText = r.black_card.text;
 
@@ -282,7 +314,7 @@
                 document.getElementById('progress-text').innerText = `${r.submissions_count} / ${r.eligible_count}`;
                 document.getElementById('progress-bar').style.width = `${percent}%`;
 
-                // Renderiza as cartas reveladas ao vivo durante a submissão
+                // Renderiza as cartas reveladas instantaneamente conforme cada um envia
                 renderLiveSubmissions(r.live_submissions || []);
             } else if (r.status === 'judging') {
                 subBox.classList.add('hidden');
@@ -311,7 +343,7 @@
         countLabel.innerText = `${submissions.length} jogada(s)`;
 
         if (submissions.length === 0) {
-            grid.innerHTML = '<p class="text-white/40 col-span-full text-center py-6 text-sm">Aguardando participantes jogarem suas cartas...</p>';
+            grid.innerHTML = '<p class="text-white/40 col-span-full text-center py-6 text-xs">Aguardando participantes jogarem suas cartas pelo celular...</p>';
             return;
         }
 
@@ -332,13 +364,13 @@
             `).join('');
 
             return `
-                <div class="apple-glass rounded-3xl p-5 space-y-3 border-white/10 animate-apple-spring hover:border-white/25 transition-all">
+                <div class="bg-[#18191f] rounded-3xl p-5 space-y-3 border border-white/10 shadow-lg animate-apple-spring hover:border-white/20 transition-all">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2">
-                            <div class="w-6 h-6 rounded-full bg-appleAccent/20 flex items-center justify-center text-appleAccent text-xs font-bold">
+                            <div class="w-7 h-7 rounded-full bg-appleAccent/20 flex items-center justify-center text-appleAccent text-xs font-black">
                                 ${sub.player_nickname.substring(0, 1).toUpperCase()}
                             </div>
-                            <span class="text-sm font-bold text-white">
+                            <span class="text-sm font-black text-white">
                                 ${sub.player_nickname}
                             </span>
                         </div>
@@ -378,9 +410,9 @@
             `).join('');
 
             return `
-                <div class="apple-glass rounded-3xl p-5 space-y-3 border-white/10 hover:border-white/25 transition-all">
+                <div class="bg-[#18191f] rounded-3xl p-5 space-y-3 border border-white/10 hover:border-white/25 transition-all">
                     <div class="flex items-center justify-between">
-                        <span class="text-xs font-mono font-bold text-appleYellow bg-appleYellow/10 px-3 py-1 rounded-full">
+                        <span class="text-xs font-mono font-black text-appleYellow bg-appleYellow/10 px-3 py-1 rounded-full">
                             Opção #${sub.anonymous_number}
                         </span>
                         <span class="text-xs font-mono font-bold text-white/60">
