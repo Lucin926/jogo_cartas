@@ -56,8 +56,14 @@ class PlayerController extends Controller
                 ],
                 'redirect_url' => route('player.play', ['token' => $player->session_token]),
             ]);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Sala não encontrada.'], 404);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Erro ao entrar na sala ' . $code . ': ' . $e->getMessage(), [
+                'exception' => $e
+            ]);
+            return response()->json([
+                'success' => false, 
+                'message' => 'Erro ao entrar: ' . $e->getMessage()
+            ], 500);
         }
     }
 
