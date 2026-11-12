@@ -30,11 +30,11 @@ class GameController extends Controller
     {
         $validated = $request->validate([
             'title' => 'nullable|string|max:100',
-            'total_rounds' => 'required|integer|min:10|max:50',
+            'total_rounds' => 'required|integer|min:3|max:50',
         ]);
 
         $game = $this->gameService->createGame(
-            $validated['title'] ?? 'Mentes Ousadas',
+            $validated['title'] ?? 'Cards Against Humanity',
             $validated['total_rounds']
         );
 

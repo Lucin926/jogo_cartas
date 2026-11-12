@@ -29,12 +29,12 @@ class GameService
         protected QrCodeService $qrCodeService
     ) {}
 
-    public function createGame(?string $title = null, int $totalRounds = 10): Game
+    public function createGame(?string $title = null, int $totalRounds = 5): Game
     {
         $deck = Deck::where('is_active', true)->first();
 
-        // Mínimo de 10 rodadas
-        $totalRounds = max(10, $totalRounds);
+        // Mínimo de 3 rodadas
+        $totalRounds = max(3, $totalRounds);
 
         do {
             $code = strtoupper(Str::random(6));
@@ -42,7 +42,7 @@ class GameService
 
         return Game::create([
             'code' => $code,
-            'title' => $title ?: 'Mentes Ousadas',
+            'title' => $title ?: 'Cards Against Humanity',
             'deck_id' => $deck?->id,
             'status' => 'lobby',
             'total_rounds' => $totalRounds,
@@ -83,8 +83,16 @@ class GameService
             'last_seen_at' => now(),
         ]);
 
-        // Distribui a mão inicial com a quantidade exata de rodadas da partida (ex: 10 rodadas = 10 cartas, 15 = 15 cartas)
-        $this->cardDeckService->dealInitialHand($player, $game->total_rounds);
+        // Se o jogo já estiver em andamento, calcula a quantidade de cartas que os outros jogadores possuem no momento
+        $cardsToDeal = $game->total_rounds;
+        $currentRound = $game->currentRound;
+        if ($currentRound && $currentRound->round_number > 1) {
+            // Se já está na rodada N, a mão já decresceu em (N - 1) cartas
+            $cardsToDeal = max(1, $game->total_rounds - ($currentRound->round_number - 1));
+        }
+
+        // Distribui a mão exata correspondente ao momento do jogo
+        $this->cardDeckService->dealInitialHand($player, $cardsToDeal);
 
         broadcast(new PlayerJoinedEvent($player));
 

@@ -215,9 +215,15 @@
             return `
                 <div onclick="${canSelect ? `toggleCard(${c.id})` : ''}" 
                     class="apple-white-card p-4 min-h-[110px] flex flex-col justify-between cursor-pointer select-none ${isSelected ? 'card-selected-apple' : ''}">
-                    <p class="font-bold text-sm leading-snug">${c.text}</p>
-                    <div class="flex items-center justify-between text-[10px] font-mono font-semibold text-black/40 pt-2 border-t border-black/5">
-                        <span>MENTES OUSADAS</span>
+                    <p class="font-extrabold text-black text-sm md:text-base leading-snug">${c.text}</p>
+                    <div class="flex items-center justify-between text-[10px] font-bold text-black/50 pt-2 border-t border-black/5">
+                        <div class="flex items-center gap-1.5">
+                            <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24">
+                                <rect x="2" y="4" width="13" height="17" rx="2" fill="black" fill-opacity="0.3"/>
+                                <rect x="7" y="2" width="13" height="17" rx="2" fill="black"/>
+                            </svg>
+                            <span class="tracking-wider uppercase text-[9px]">Cards Against Humanity</span>
+                        </div>
                         ${isSelected ? `<span class="bg-appleAccent text-white font-bold w-5 h-5 rounded-full flex items-center justify-center text-xs shadow-md">${badgeNumber}</span>` : ''}
                     </div>
                 </div>

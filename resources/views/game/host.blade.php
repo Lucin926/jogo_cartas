@@ -92,7 +92,13 @@
                         </p>
 
                         <div class="flex items-center justify-between text-xs text-white/40 font-medium pt-6 border-t border-white/10 mt-6">
-                            <span>MENTES OUSADAS</span>
+                            <div class="flex items-center gap-2">
+                                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                                    <rect x="2" y="4" width="13" height="17" rx="2" fill="white" fill-opacity="0.3"/>
+                                    <rect x="7" y="2" width="13" height="17" rx="2" fill="white"/>
+                                </svg>
+                                <span class="font-bold tracking-wider uppercase text-[11px]">Cards Against Humanity</span>
+                            </div>
                             <span class="text-white/60">Votação Coletiva</span>
                         </div>
                     </div>
@@ -311,22 +317,36 @@
 
         grid.innerHTML = submissions.map(sub => {
             const cardsHtml = sub.cards.map(c => `
-                <div class="apple-white-card p-4 font-bold text-sm leading-snug">
-                    ${c.text}
+                <div class="apple-white-card p-5 min-h-[140px] rounded-2xl shadow-xl border border-black/10">
+                    <p class="font-extrabold text-black text-base md:text-lg leading-snug">
+                        ${c.text}
+                    </p>
+                    <div class="flex items-center gap-1.5 text-black/50 text-[10px] font-bold uppercase tracking-wider pt-3 mt-3 border-t border-black/5">
+                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                            <rect x="2" y="4" width="13" height="17" rx="2" fill="black" fill-opacity="0.3"/>
+                            <rect x="7" y="2" width="13" height="17" rx="2" fill="black"/>
+                        </svg>
+                        <span>Cards Against Humanity</span>
+                    </div>
                 </div>
             `).join('');
 
             return `
-                <div class="apple-glass rounded-2xl p-4 space-y-2 border-white/10 animate-apple-spring hover:border-white/25 transition-all">
+                <div class="apple-glass rounded-3xl p-5 space-y-3 border-white/10 animate-apple-spring hover:border-white/25 transition-all">
                     <div class="flex items-center justify-between">
-                        <span class="text-xs font-mono font-bold text-appleAccent bg-appleAccent/10 px-2.5 py-0.5 rounded-full">
-                            Carta Jogada
-                        </span>
-                        <span class="text-xs font-semibold text-white/60">
-                            ${sub.player_nickname}
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 rounded-full bg-appleAccent/20 flex items-center justify-center text-appleAccent text-xs font-bold">
+                                ${sub.player_nickname.substring(0, 1).toUpperCase()}
+                            </div>
+                            <span class="text-sm font-bold text-white">
+                                ${sub.player_nickname}
+                            </span>
+                        </div>
+                        <span class="text-[10px] font-mono font-bold text-appleGreen bg-appleGreen/10 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                            Jogou
                         </span>
                     </div>
-                    <div class="space-y-2">
+                    <div class="space-y-3">
                         ${cardsHtml}
                     </div>
                 </div>
@@ -343,22 +363,31 @@
 
         grid.innerHTML = submissions.map(sub => {
             const cardsHtml = sub.cards.map(c => `
-                <div class="apple-white-card p-4 font-bold text-sm">
-                    ${c.text}
+                <div class="apple-white-card p-5 min-h-[140px] rounded-2xl shadow-xl border border-black/10">
+                    <p class="font-extrabold text-black text-base md:text-lg leading-snug">
+                        ${c.text}
+                    </p>
+                    <div class="flex items-center gap-1.5 text-black/50 text-[10px] font-bold uppercase tracking-wider pt-3 mt-3 border-t border-black/5">
+                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                            <rect x="2" y="4" width="13" height="17" rx="2" fill="black" fill-opacity="0.3"/>
+                            <rect x="7" y="2" width="13" height="17" rx="2" fill="black"/>
+                        </svg>
+                        <span>Cards Against Humanity</span>
+                    </div>
                 </div>
             `).join('');
 
             return `
-                <div class="apple-glass rounded-2xl p-4 space-y-3 border-white/10 hover:border-white/25 transition-all">
+                <div class="apple-glass rounded-3xl p-5 space-y-3 border-white/10 hover:border-white/25 transition-all">
                     <div class="flex items-center justify-between">
-                        <span class="text-xs font-mono font-bold text-appleYellow bg-appleYellow/10 px-2.5 py-1 rounded-full">
+                        <span class="text-xs font-mono font-bold text-appleYellow bg-appleYellow/10 px-3 py-1 rounded-full">
                             Opção #${sub.anonymous_number}
                         </span>
-                        <span class="text-xs font-mono font-medium text-white/50">
+                        <span class="text-xs font-mono font-bold text-white/60">
                             ${sub.votes || 0} voto(s)
                         </span>
                     </div>
-                    <div class="space-y-2">
+                    <div class="space-y-3">
                         ${cardsHtml}
                     </div>
                 </div>

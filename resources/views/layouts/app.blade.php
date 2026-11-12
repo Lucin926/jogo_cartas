@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Mentes Ousadas - Jogo de Cartas')</title>
+    <title>@yield('title', 'Cards Against Humanity - O Jogo')</title>
     <!-- Fonte Inter & SF Pro Display via Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -69,56 +69,48 @@
         }
 
         .apple-white-card {
-            background: linear-gradient(145deg, #FFFFFF 0%, #F5F5F7 100%);
-            color: #1D1D1F;
+            background: #FFFFFF;
+            color: #000000;
             border-radius: 20px;
             box-shadow: 
-                0 1px 2px rgba(0, 0, 0, 0.08),
-                0 4px 12px rgba(0, 0, 0, 0.08),
-                0 12px 24px -4px rgba(0, 0, 0, 0.12),
-                inset 0 1px 0 rgba(255, 255, 255, 1),
-                inset 0 -2px 0 rgba(0, 0, 0, 0.05);
-            transition: all 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+                0 4px 10px rgba(0, 0, 0, 0.15),
+                0 15px 30px -5px rgba(0, 0, 0, 0.25),
+                inset 0 1px 0 #FFFFFF;
+            transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
             position: relative;
             transform: perspective(1000px) translateZ(0);
-            border: 1px solid rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .apple-white-card:hover {
-            transform: perspective(1000px) translateY(-6px) translateZ(12px) rotateX(2deg);
+            transform: perspective(1000px) translateY(-8px) translateZ(15px);
             box-shadow: 
-                0 2px 4px rgba(0, 0, 0, 0.06),
-                0 12px 24px -2px rgba(0, 0, 0, 0.18),
-                0 24px 36px -8px rgba(0, 0, 0, 0.22),
-                inset 0 1px 0 rgba(255, 255, 255, 1),
-                inset 0 -3px 0 rgba(0, 0, 0, 0.08);
+                0 8px 16px rgba(0, 0, 0, 0.2),
+                0 25px 45px -8px rgba(0, 0, 0, 0.35);
         }
 
         .apple-white-card:active {
             transform: perspective(1000px) translateY(1px) scale(0.98);
-            box-shadow: 
-                0 2px 6px rgba(0, 0, 0, 0.1),
-                inset 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
         .card-selected-apple {
-            transform: perspective(1000px) translateY(-10px) translateZ(20px) scale(1.03) !important;
+            transform: perspective(1000px) translateY(-12px) translateZ(25px) scale(1.02) !important;
             box-shadow: 
                 0 0 0 3px #0A84FF,
-                0 16px 32px -4px rgba(10, 132, 255, 0.45),
-                0 24px 48px -10px rgba(0, 0, 0, 0.5) !important;
+                0 20px 40px -4px rgba(10, 132, 255, 0.5) !important;
         }
 
         .apple-black-card {
-            background: linear-gradient(155deg, #222226 0%, #121214 50%, #080809 100%);
+            background: #111113;
             color: #FFFFFF;
-            border-radius: 28px;
-            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
             box-shadow: 
-                0 20px 40px -10px rgba(0, 0, 0, 0.9),
-                0 35px 70px -15px rgba(0, 0, 0, 0.95),
-                inset 0 1px 1px rgba(255, 255, 255, 0.3),
-                inset 0 -2px 4px rgba(0, 0, 0, 0.5);
+                0 20px 45px -10px rgba(0, 0, 0, 0.9),
+                inset 0 1px 1px rgba(255, 255, 255, 0.25);
             transform: perspective(1000px) translateZ(0);
         }
 
