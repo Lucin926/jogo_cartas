@@ -45,7 +45,7 @@
         btn.innerText = 'Entrando...';
 
         try {
-            const res = await fetch(`/join/${gameCode}`, {
+            const res = await fetch(window.location.pathname, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
