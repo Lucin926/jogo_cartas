@@ -69,34 +69,57 @@
         }
 
         .apple-white-card {
-            background: #FFFFFF;
+            background: linear-gradient(145deg, #FFFFFF 0%, #F5F5F7 100%);
             color: #1D1D1F;
             border-radius: 20px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.05);
-            transition: all 0.28s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: 
+                0 1px 2px rgba(0, 0, 0, 0.08),
+                0 4px 12px rgba(0, 0, 0, 0.08),
+                0 12px 24px -4px rgba(0, 0, 0, 0.12),
+                inset 0 1px 0 rgba(255, 255, 255, 1),
+                inset 0 -2px 0 rgba(0, 0, 0, 0.05);
+            transition: all 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
             position: relative;
+            transform: perspective(1000px) translateZ(0);
+            border: 1px solid rgba(0, 0, 0, 0.06);
         }
 
         .apple-white-card:hover {
-            transform: translateY(-4px) scale(1.015);
-            box-shadow: 0 16px 32px -8px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(0, 0, 0, 0.08);
+            transform: perspective(1000px) translateY(-6px) translateZ(12px) rotateX(2deg);
+            box-shadow: 
+                0 2px 4px rgba(0, 0, 0, 0.06),
+                0 12px 24px -2px rgba(0, 0, 0, 0.18),
+                0 24px 36px -8px rgba(0, 0, 0, 0.22),
+                inset 0 1px 0 rgba(255, 255, 255, 1),
+                inset 0 -3px 0 rgba(0, 0, 0, 0.08);
         }
 
         .apple-white-card:active {
-            transform: scale(0.97);
+            transform: perspective(1000px) translateY(1px) scale(0.98);
+            box-shadow: 
+                0 2px 6px rgba(0, 0, 0, 0.1),
+                inset 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
         .card-selected-apple {
-            transform: translateY(-8px) scale(1.02) !important;
-            box-shadow: 0 18px 36px -6px rgba(10, 132, 255, 0.4), 0 0 0 3px #0A84FF !important;
+            transform: perspective(1000px) translateY(-10px) translateZ(20px) scale(1.03) !important;
+            box-shadow: 
+                0 0 0 3px #0A84FF,
+                0 16px 32px -4px rgba(10, 132, 255, 0.45),
+                0 24px 48px -10px rgba(0, 0, 0, 0.5) !important;
         }
 
         .apple-black-card {
-            background: linear-gradient(145deg, #18181A 0%, #0A0A0B 100%);
+            background: linear-gradient(155deg, #222226 0%, #121214 50%, #080809 100%);
             color: #FFFFFF;
             border-radius: 28px;
             border: 1px solid rgba(255, 255, 255, 0.16);
-            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            box-shadow: 
+                0 20px 40px -10px rgba(0, 0, 0, 0.9),
+                0 35px 70px -15px rgba(0, 0, 0, 0.95),
+                inset 0 1px 1px rgba(255, 255, 255, 0.3),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.5);
+            transform: perspective(1000px) translateZ(0);
         }
 
         @keyframes appleSpring {

@@ -13,7 +13,12 @@ class SubmissionReceivedEvent implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public function __construct(public Round $round, public int $submissionsCount, public int $eligibleCount) {}
+    public function __construct(
+        public Round $round, 
+        public int $submissionsCount, 
+        public int $eligibleCount,
+        public ?array $submissionData = null
+    ) {}
 
     public function broadcastOn(): array
     {
@@ -29,6 +34,7 @@ class SubmissionReceivedEvent implements ShouldBroadcastNow
             'round_id' => $this->round->id,
             'submissions_count' => $this->submissionsCount,
             'eligible_count' => $this->eligibleCount,
+            'submission' => $this->submissionData,
         ];
     }
 }

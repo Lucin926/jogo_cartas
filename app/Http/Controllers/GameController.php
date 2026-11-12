@@ -121,19 +121,36 @@ class GameController extends Controller
         $readyCount = $currentRound ? RoundNextReady::where('round_id', $currentRound->id)->count() : 0;
 
         $anonymizedSubmissions = [];
-        if ($currentRound && in_array($currentRound->status, ['judging', 'finished'])) {
-            $subs = $currentRound->submissions()->with(['cards.whiteCard'])->orderBy('anonymous_order')->get();
-            foreach ($subs as $sub) {
-                $votesForThis = RoundVote::where('submission_id', $sub->id)->count();
-                $anonymizedSubmissions[] = [
-                    'submission_id' => $sub->id,
-                    'anonymous_number' => $sub->anonymous_order,
-                    'votes' => $votesForThis,
+        $liveRevealedSubmissions = [];
+
+        if ($currentRound) {
+            // Cartas já reveladas durante a fase de submissão
+            $allSubs = $currentRound->submissions()->with(['cards.whiteCard', 'player'])->get();
+            foreach ($allSubs as $sub) {
+                $liveRevealedSubmissions[] = [
+                    'id' => $sub->id,
+                    'player_nickname' => $sub->player?->nickname ?? 'Jogador',
                     'cards' => $sub->cards->map(fn($sc) => [
                         'order' => $sc->sequence_order,
                         'text' => $sc->whiteCard->text,
                     ]),
                 ];
+            }
+
+            if (in_array($currentRound->status, ['judging', 'finished'])) {
+                $subs = $currentRound->submissions()->with(['cards.whiteCard'])->orderBy('anonymous_order')->get();
+                foreach ($subs as $sub) {
+                    $votesForThis = RoundVote::where('submission_id', $sub->id)->count();
+                    $anonymizedSubmissions[] = [
+                        'submission_id' => $sub->id,
+                        'anonymous_number' => $sub->anonymous_order,
+                        'votes' => $votesForThis,
+                        'cards' => $sub->cards->map(fn($sc) => [
+                            'order' => $sc->sequence_order,
+                            'text' => $sc->whiteCard->text,
+                        ]),
+                    ];
+                }
             }
         }
 
@@ -157,6 +174,7 @@ class GameController extends Controller
                 'votes_count' => $votesCount,
                 'ready_count' => $readyCount,
                 'anonymized_submissions' => $anonymizedSubmissions,
+                'live_submissions' => $liveRevealedSubmissions,
                 'winner_submission_id' => $currentRound->winner_submission_id,
             ] : null,
         ]);

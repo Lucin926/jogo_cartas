@@ -98,16 +98,32 @@
                     </div>
                 </div>
 
-                <!-- Progresso de Respostas -->
-                <div id="submissions-progress-box" class="apple-glass rounded-2xl p-6 text-center max-w-lg mx-auto w-full">
-                    <div class="flex items-center justify-between text-sm text-white/60 mb-2">
-                        <span>Respostas enviadas</span>
-                        <span id="progress-text" class="font-mono font-bold text-white text-base">0 / 0</span>
+                <!-- Progresso de Respostas e Revelação Instantânea de Cartas -->
+                <div id="submissions-progress-box" class="space-y-6">
+                    <div class="apple-glass rounded-2xl p-6 text-center max-w-lg mx-auto w-full">
+                        <div class="flex items-center justify-between text-sm text-white/60 mb-2">
+                            <span>Respostas enviadas</span>
+                            <span id="progress-text" class="font-mono font-bold text-white text-base">0 / 0</span>
+                        </div>
+                        <div class="w-full bg-white/10 rounded-full h-2.5 overflow-hidden">
+                            <div id="progress-bar" class="bg-appleAccent h-full rounded-full transition-all duration-300 w-0"></div>
+                        </div>
+                        <p class="text-xs text-white/40 mt-2.5" id="progress-subtitle">As cartas enviadas aparecem instantaneamente abaixo!</p>
                     </div>
-                    <div class="w-full bg-white/10 rounded-full h-2.5 overflow-hidden">
-                        <div id="progress-bar" class="bg-appleAccent h-full rounded-full transition-all duration-300 w-0"></div>
+
+                    <!-- Grid de Cartas Reveladas Instantaneamente conforme cada um envia -->
+                    <div id="live-revealed-cards-section" class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-semibold text-white/50 uppercase tracking-wider flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-appleGreen animate-pulse"></span>
+                                Cartas Jogadas na Mesa
+                            </span>
+                            <span class="text-xs text-white/40" id="live-cards-count-label">0 jogadas</span>
+                        </div>
+                        <div id="live-revealed-cards-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+                            <!-- Cards adicionados via JS em tempo real -->
+                        </div>
                     </div>
-                    <p class="text-xs text-white/40 mt-2.5">Aguardando participantes enviarem suas cartas pelo celular...</p>
                 </div>
 
                 <!-- FASE DE VOTAÇÃO (Cartas Reveladas) -->
@@ -259,6 +275,9 @@
                 const percent = r.eligible_count > 0 ? (r.submissions_count / r.eligible_count) * 100 : 0;
                 document.getElementById('progress-text').innerText = `${r.submissions_count} / ${r.eligible_count}`;
                 document.getElementById('progress-bar').style.width = `${percent}%`;
+
+                // Renderiza as cartas reveladas ao vivo durante a submissão
+                renderLiveSubmissions(r.live_submissions || []);
             } else if (r.status === 'judging') {
                 subBox.classList.add('hidden');
                 judgingGrid.classList.remove('hidden');
@@ -276,6 +295,43 @@
                 document.getElementById('host-ready-status').innerText = `${r.ready_count} de ${r.eligible_count} jogadores prontos para a próxima rodada`;
             }
         }
+    }
+
+    function renderLiveSubmissions(submissions) {
+        const grid = document.getElementById('live-revealed-cards-grid');
+        const countLabel = document.getElementById('live-cards-count-label');
+        if (!grid) return;
+
+        countLabel.innerText = `${submissions.length} jogada(s)`;
+
+        if (submissions.length === 0) {
+            grid.innerHTML = '<p class="text-white/40 col-span-full text-center py-6 text-sm">Aguardando participantes jogarem suas cartas...</p>';
+            return;
+        }
+
+        grid.innerHTML = submissions.map(sub => {
+            const cardsHtml = sub.cards.map(c => `
+                <div class="apple-white-card p-4 font-bold text-sm leading-snug">
+                    ${c.text}
+                </div>
+            `).join('');
+
+            return `
+                <div class="apple-glass rounded-2xl p-4 space-y-2 border-white/10 animate-apple-spring hover:border-white/25 transition-all">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-mono font-bold text-appleAccent bg-appleAccent/10 px-2.5 py-0.5 rounded-full">
+                            Carta Jogada
+                        </span>
+                        <span class="text-xs font-semibold text-white/60">
+                            ${sub.player_nickname}
+                        </span>
+                    </div>
+                    <div class="space-y-2">
+                        ${cardsHtml}
+                    </div>
+                </div>
+            `;
+        }).join('');
     }
 
     function renderJudgingCards(submissions) {
@@ -364,7 +420,9 @@
             window.Echo.channel(`game.${gameCode}`)
                 .listen('PlayerJoinedEvent', () => fetchState())
                 .listen('RoundStartedEvent', () => fetchState())
-                .listen('SubmissionReceivedEvent', () => fetchState())
+                .listen('SubmissionReceivedEvent', (e) => {
+                    fetchState();
+                })
                 .listen('JudgingPhaseStartedEvent', () => fetchState())
                 .listen('VoteReceivedEvent', () => fetchState())
                 .listen('RoundWinnerAnnouncedEvent', (e) => {

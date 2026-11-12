@@ -95,8 +95,8 @@ class GameService
     {
         return DB::transaction(function () use ($game) {
             $players = $game->players()->where('is_connected', true)->orderBy('id')->get();
-            if ($players->count() < 2) {
-                throw new \DomainException('É necessário ter pelo menos 2 participantes para iniciar o jogo.');
+            if ($players->count() < 1) {
+                throw new \DomainException('É necessário ter pelo menos 1 participante para iniciar o jogo.');
             }
 
             $lastRound = $game->rounds()->orderByDesc('round_number')->first();
@@ -183,14 +183,23 @@ class GameService
                 ]);
             }
 
-            // Atualiza a mão do jogador em tempo real (agora com menos cartas)
             $remainingHand = $this->getPlayerHandData($player);
             broadcast(new PlayerHandUpdatedEvent($player, $remainingHand));
+
+            $submission->load('cards.whiteCard');
+            $submissionData = [
+                'id' => $submission->id,
+                'player_nickname' => $player->nickname,
+                'cards' => $submission->cards->map(fn($sc) => [
+                    'order' => $sc->sequence_order,
+                    'text' => $sc->whiteCard->text,
+                ])->toArray(),
+            ];
 
             $submissionsCount = $round->submissions()->count();
             $eligiblePlayers = $round->game->players()->where('is_connected', true)->count();
 
-            broadcast(new SubmissionReceivedEvent($round, $submissionsCount, $eligiblePlayers));
+            broadcast(new SubmissionReceivedEvent($round, $submissionsCount, $eligiblePlayers, $submissionData));
 
             if ($submissionsCount >= $eligiblePlayers && $eligiblePlayers > 0) {
                 $this->transitionToJudging($round);
@@ -248,7 +257,11 @@ class GameService
                 ->firstOrFail();
 
             if ($submission->player_id === $voter->id) {
-                throw new \DomainException('Você não pode votar na sua própria resposta.');
+                $totalActivePlayers = $round->game->players()->where('is_connected', true)->count();
+                // Só impede o auto-voto se houver 2 ou mais jogadores na partida
+                if ($totalActivePlayers > 1) {
+                    throw new \DomainException('Você não pode votar na sua própria resposta.');
+                }
             }
 
             $vote = RoundVote::create([
@@ -322,7 +335,7 @@ class GameService
         broadcast(new NextRoundReadyEvent($round, $readyCount, $totalPlayers));
 
         // Quando todos clicam em "Próxima Rodada", avança para a próxima se ainda não terminou a partida
-        if ($readyCount >= $totalPlayers && $totalPlayers >= 2 && $round->game->status !== 'finished') {
+        if ($readyCount >= $totalPlayers && $totalPlayers >= 1 && $round->game->status !== 'finished') {
             $this->startRound($round->game);
         }
     }

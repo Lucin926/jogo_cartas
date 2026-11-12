@@ -273,7 +273,10 @@
             `).join('');
 
             let actionButton = '';
-            if (sub.is_own) {
+            // Se estiver jogando sozinho (1 jogador), permite votar na sua própria resposta para testar o fluxo completo
+            const isSoloPlayer = (state.currentRound && state.currentRound.total_players <= 1);
+
+            if (sub.is_own && !isSoloPlayer) {
                 actionButton = `
                     <div class="text-center py-2 text-xs font-semibold text-white/40 bg-white/5 rounded-xl">
                         Sua resposta (você não pode votar nela)
