@@ -12,6 +12,12 @@ class GameDeckSeeder extends Seeder
 {
     public function run(): void
     {
+        // Se o deck oficial já existir e tiver cartas, não precisa truncar nem recriar
+        $existingDeck = Deck::where('is_active', true)->first();
+        if ($existingDeck && WhiteCard::where('deck_id', $existingDeck->id)->count() >= 500) {
+            return;
+        }
+
         // Limpa tabelas com método agnóstico (compatível com MySQL e PostgreSQL no Render)
         $isPgsql = DB::getDriverName() === 'pgsql';
 
