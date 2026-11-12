@@ -134,12 +134,12 @@
     <script>
         const reverbKey = "{{ config('reverb.apps.apps.0.key', env('REVERB_APP_KEY', 'llmuwx2zn3reu9yaiy83')) }}";
         const isHttps = window.location.protocol === 'https:';
-        const isTunnel = window.location.hostname.includes('trycloudflare.com');
+        const isProduction = window.location.hostname.includes('onrender.com') || window.location.hostname.includes('trycloudflare.com') || isHttps;
 
-        // Configuração adaptativa automática (local vs nuvem/túnel seguro)
-        const wsHost = isTunnel ? window.location.hostname : window.location.hostname;
-        const wsPort = isTunnel ? (isHttps ? 443 : 80) : {{ env('REVERB_PORT', 8085) }};
-        const forceTls = isHttps || isTunnel;
+        // Na nuvem (Render/Cloudflare), o WebSocket passa pela porta padrão 443 (HTTPS) através do Nginx
+        const wsHost = window.location.hostname;
+        const wsPort = isProduction ? 443 : {{ env('REVERB_PORT', 8085) }};
+        const forceTls = isProduction;
 
         window.Echo = new Echo({
             broadcaster: 'reverb',

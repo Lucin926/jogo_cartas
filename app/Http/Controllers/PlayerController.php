@@ -63,7 +63,13 @@ class PlayerController extends Controller
 
     public function play(string $token)
     {
-        $player = Player::where('session_token', $token)->with('game')->firstOrFail();
+        $player = Player::where('session_token', $token)->with('game')->first();
+
+        if (!$player || !$player->game) {
+            // Se o jogador ou a sala não existirem mais no banco, redireciona para a home
+            return redirect()->route('home')->with('error', 'Sua sessão expirou ou a sala foi encerrada.');
+        }
+
         $game = $player->game;
 
         return view('player.play', compact('player', 'game'));
@@ -71,7 +77,12 @@ class PlayerController extends Controller
 
     public function syncState(string $token): JsonResponse
     {
-        $player = Player::where('session_token', $token)->with('game')->firstOrFail();
+        $player = Player::where('session_token', $token)->with('game')->first();
+
+        if (!$player || !$player->game) {
+            return response()->json(['error' => 'Jogador ou partida não encontrados'], 404);
+        }
+
         $game = $player->game;
         $currentRound = $game->currentRound;
 

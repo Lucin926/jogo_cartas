@@ -30,11 +30,7 @@
 <script>
     const gameCode = "{{ $game->code }}";
 
-    const savedToken = localStorage.getItem(`player_token_${gameCode}`);
-    if (savedToken) {
-        window.location.href = `/play/${savedToken}`;
-    }
-
+    // Submissão do formulário de entrada
     async function handleJoin(e) {
         e.preventDefault();
         const btn = document.getElementById('btn-submit-join');
@@ -45,14 +41,17 @@
         btn.innerText = 'Entrando...';
 
         try {
-            const res = await fetch(window.location.pathname, {
+            const res = await fetch("{{ route('game.join', ['code' => $game->code]) }}", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
                     'Accept': 'application/json'
                 },
-                body: JSON.stringify({ nickname })
+                body: JSON.stringify({ 
+                    nickname: nickname,
+                    session_token: localStorage.getItem(`player_token_${gameCode}`) || null
+                })
             });
 
             const data = await res.json();
