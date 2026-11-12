@@ -1,7 +1,7 @@
 # Setup Dockerfile para Render / Railway / Fly.io / VPS
 FROM php:8.3-fpm-alpine
 
-# Dependências do sistema e extensões PHP necessárias para Laravel + MySQL + Reverb
+# Dependências do sistema (incluindo linux-headers que contém o sock_diag.h)
 RUN apk add --no-cache \
     nginx \
     supervisor \
@@ -14,6 +14,7 @@ RUN apk add --no-cache \
     bash \
     icu-dev \
     mysql-client \
+    linux-headers \
     && docker-php-ext-install pdo pdo_mysql intl pcntl bcmath sockets
 
 # Composer
@@ -34,10 +35,10 @@ RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache \
 # Configuração do Nginx
 COPY docker/nginx.conf /etc/nginx/http.d/default.conf
 
-# Configuração do Supervisor (gerencia Nginx + PHP-FPM + Laravel Reverb)
+# Configuração do Supervisor
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Script de entrada (executa migrations e seeders se necessário)
+# Script de entrada
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
