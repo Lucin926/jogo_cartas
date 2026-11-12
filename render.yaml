@@ -1,0 +1,59 @@
+services:
+  - type: web
+    name: mentes-ousadas
+    env: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: APP_NAME
+        value: "Mentes Ousadas"
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_KEY
+        generateValue: true
+      - key: BROADCAST_CONNECTION
+        value: reverb
+      - key: REVERB_APP_ID
+        value: "602569"
+      - key: REVERB_APP_KEY
+        value: "llmuwx2zn3reu9yaiy83"
+      - key: REVERB_APP_SECRET
+        value: "drwcww3fmn4jgsouaaay"
+      - key: REVERB_HOST
+        value: "0.0.0.0"
+      - key: REVERB_PORT
+        value: "8085"
+      - key: REVERB_SCHEME
+        value: https
+      - key: DB_CONNECTION
+        value: mysql
+      - key: DB_HOST
+        fromDatabase:
+          name: mentes-ousadas-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: mentes-ousadas-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: mentes-ousadas-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: mentes-ousadas-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: mentes-ousadas-db
+          property: password
+
+databases:
+  - name: mentes-ousadas-db
+    databaseName: jogo_cartas
+    user: admin
+    plan: free
+    region: oregon
