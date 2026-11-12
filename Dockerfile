@@ -1,5 +1,5 @@
-# Imagem Debian Bookworm oficial do PHP (com todas as extensões prontas e compatíveis)
-FROM php:8.3-fpm-bookworm
+# Usamos PHP 8.4 oficial (já que o composer.lock do Laravel 11/Symfony 8 exige PHP >= 8.4.1)
+FROM php:8.4-fpm-bookworm
 
 # Instala dependências do sistema e Nginx + Supervisor + cliente MySQL
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -32,7 +32,7 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache \
     && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
-# Configuração do Nginx (Debian usa sites-available / sites-enabled)
+# Configuração do Nginx
 COPY docker/nginx.conf /etc/nginx/sites-available/default
 RUN rm -f /etc/nginx/sites-enabled/default && ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
