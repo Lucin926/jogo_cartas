@@ -23,11 +23,15 @@ services:
       - key: REVERB_APP_SECRET
         value: "drwcww3fmn4jgsouaaay"
       - key: REVERB_HOST
-        value: "0.0.0.0"
+        value: "mentes-ousadas.onrender.com"
       - key: REVERB_PORT
-        value: "8085"
+        value: "443"
       - key: REVERB_SCHEME
         value: https
+      - key: REVERB_SERVER_HOST
+        value: "127.0.0.1"
+      - key: REVERB_SERVER_PORT
+        value: "8085"
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
