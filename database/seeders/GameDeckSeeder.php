@@ -12,12 +12,18 @@ class GameDeckSeeder extends Seeder
 {
     public function run(): void
     {
-        // Limpa tabelas dependentes e recria o baralho exclusivo
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        BlackCard::truncate();
-        WhiteCard::truncate();
-        Deck::truncate();
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        // Limpa tabelas com método agnóstico (compatível com MySQL e PostgreSQL no Render)
+        $isPgsql = DB::getDriverName() === 'pgsql';
+
+        if ($isPgsql) {
+            DB::statement('TRUNCATE TABLE black_cards, white_cards, decks RESTART IDENTITY CASCADE;');
+        } else {
+            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+            BlackCard::truncate();
+            WhiteCard::truncate();
+            Deck::truncate();
+            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        }
 
         $deck = Deck::create([
             'name' => 'Deck Oficial Completo',
@@ -600,7 +606,6 @@ class GameDeckSeeder extends Seeder
 
         // ==========================================
         // 2. CARTAS PRETAS (PERGUNTAS) - Páginas 1 a 5
-        // Substituindo [trecho ilegível] pelas lacunas ______
         // ==========================================
         $rawBlackCards = [
             // Página 1
@@ -715,7 +720,6 @@ class GameDeckSeeder extends Seeder
             "E a moral da estória é ______."
         ];
 
-        // Insere cartas brancas
         $uniqueWhite = array_unique(array_filter(array_map('trim', $rawWhiteCards)));
         foreach ($uniqueWhite as $text) {
             WhiteCard::create([
@@ -725,7 +729,6 @@ class GameDeckSeeder extends Seeder
             ]);
         }
 
-        // Insere cartas pretas com cálculo automático de lacunas
         $uniqueBlack = array_unique(array_filter(array_map('trim', $rawBlackCards)));
         foreach ($uniqueBlack as $text) {
             $pickCount = BlackCard::countPickSlots($text);

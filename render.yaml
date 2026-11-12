@@ -29,7 +29,7 @@ services:
       - key: REVERB_SCHEME
         value: https
       - key: DB_CONNECTION
-        value: mysql
+        value: pgsql
       - key: DB_HOST
         fromDatabase:
           name: mentes-ousadas-db

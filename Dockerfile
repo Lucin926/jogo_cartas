@@ -1,7 +1,7 @@
-# Usamos PHP 8.4 oficial (já que o composer.lock do Laravel 11/Symfony 8 exige PHP >= 8.4.1)
+# Usamos PHP 8.4 oficial
 FROM php:8.4-fpm-bookworm
 
-# Instala dependências do sistema e Nginx + Supervisor + cliente MySQL
+# Instala dependências do sistema e Nginx + Supervisor + drivers PostgreSQL e MySQL
 RUN apt-get update && apt-get install -y --no-install-recommends \
     nginx \
     supervisor \
@@ -13,8 +13,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxml2-dev \
     libzip-dev \
     libicu-dev \
+    libpq-dev \
     default-mysql-client \
-    && docker-php-ext-install pdo pdo_mysql intl pcntl bcmath sockets \
+    postgresql-client \
+    && docker-php-ext-install pdo pdo_mysql pdo_pgsql pgsql intl pcntl bcmath sockets \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Instala Composer
