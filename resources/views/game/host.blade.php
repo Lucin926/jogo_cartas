@@ -132,19 +132,19 @@
                         </div>
                         <p class="text-xs text-white/40 mt-2 font-medium" id="progress-subtitle">As cartas aparecem na mesa assim que forem enviadas!</p>
                     </div>
+                </div>
 
-                    <!-- GRID DE CARTAS JOGADAS AO VIVO COM NOME DO JOGADOR -->
-                    <div id="live-revealed-cards-section" class="space-y-3">
-                        <div class="flex items-center justify-between px-2">
-                            <span class="text-xs font-bold text-white/60 uppercase tracking-wider flex items-center gap-2">
-                                <span class="w-2.5 h-2.5 rounded-full bg-appleGreen animate-pulse"></span>
-                                Cartas Jogadas na Mesa
-                            </span>
-                            <span class="text-xs font-mono font-bold text-white/40" id="live-cards-count-label">0 jogadas</span>
-                        </div>
-                        <div id="live-revealed-cards-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-                            <!-- Cards ao vivo inseridos via JS -->
-                        </div>
+                <!-- SEÇÃO PERSISTENTE DE CARTAS JOGADAS NA MESA (FICA VISÍVEL NA SUBMISSÃO E NA VOTAÇÃO) -->
+                <div id="live-revealed-cards-section" class="space-y-3">
+                    <div class="flex items-center justify-between px-2">
+                        <span class="text-xs font-bold text-white/60 uppercase tracking-wider flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-appleGreen animate-pulse"></span>
+                            Cartas Jogadas nesta Rodada (por Jogador)
+                        </span>
+                        <span class="text-xs font-mono font-bold text-white/40" id="live-cards-count-label">0 jogadas</span>
+                    </div>
+                    <div id="live-revealed-cards-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+                        <!-- Cards ao vivo inseridos via JS -->
                     </div>
                 </div>
 
@@ -301,11 +301,16 @@
             document.getElementById('black-card-text').innerText = r.black_card.text;
 
             const subBox = document.getElementById('submissions-progress-box');
+            const liveCardsSection = document.getElementById('live-revealed-cards-section');
             const judgingGrid = document.getElementById('judging-grid-container');
             const winnerBanner = document.getElementById('round-winner-banner');
 
+            // Renderiza sempre as cartas enviadas por jogador nesta rodada
+            renderLiveSubmissions(r.live_submissions || []);
+
             if (r.status === 'submitting') {
                 subBox.classList.remove('hidden');
+                liveCardsSection.classList.remove('hidden');
                 judgingGrid.classList.add('hidden');
                 winnerBanner.classList.add('hidden');
                 btnForceJudging.classList.remove('hidden');
@@ -313,11 +318,9 @@
                 const percent = r.eligible_count > 0 ? (r.submissions_count / r.eligible_count) * 100 : 0;
                 document.getElementById('progress-text').innerText = `${r.submissions_count} / ${r.eligible_count}`;
                 document.getElementById('progress-bar').style.width = `${percent}%`;
-
-                // Renderiza as cartas reveladas instantaneamente conforme cada um envia
-                renderLiveSubmissions(r.live_submissions || []);
             } else if (r.status === 'judging') {
                 subBox.classList.add('hidden');
+                liveCardsSection.classList.remove('hidden');
                 judgingGrid.classList.remove('hidden');
                 winnerBanner.classList.add('hidden');
                 btnForceJudging.classList.add('hidden');
@@ -326,6 +329,7 @@
                 renderJudgingCards(r.anonymized_submissions);
             } else if (r.status === 'finished') {
                 subBox.classList.add('hidden');
+                liveCardsSection.classList.add('hidden');
                 judgingGrid.classList.add('hidden');
                 winnerBanner.classList.remove('hidden');
                 btnForceJudging.classList.add('hidden');
